@@ -1,0 +1,5 @@
+docker build -t test/myapp .
+
+docker run -it --rm test/myapp
+
+docker run -it --rm -v /Users/koba/work/PDC/DEPLOY/myapp:/app test/myapp
