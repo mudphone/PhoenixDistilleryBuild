@@ -1,5 +1,37 @@
+# Build the container
 docker build -t test/myapp .
 
+# Run the container and connect
 docker run -it --rm test/myapp
 
+# Run with app volume attached
 docker run -it --rm -v /Users/koba/work/PDC/DEPLOY/myapp:/app test/myapp
+
+# Run with volume and ports 
+docker run -it --rm -v /Users/koba/work/PDC/DEPLOY/myapp:/app -p 4000:4000 -e MIX_ENV=prod -e PORT=4000 test/myapp
+
+docker run -it --rm -v /Users/koba/work/PDC/DEPLOY/myapp:/app -p 4000:4000 -e MIX_ENV=prod -e PORT=4000 test/myapp
+
+# copy prod.secret.exs to /root or wherever specified in prod.exs
+
+# To build the release from the container:
+echo "export PORT=4000" >> ~/.profile
+source ~/.profile
+cd myapp
+MIX_ENV=prod mix do phx.digest, release --env=prod
+
+# Create local_deploy dir, expand files
+cp _build/prod/rel/myapp/releases/0.0.1/myapp.tar.gz local_deploy/
+tar xvfz myapp.tar.gz
+
+# Run with the system env vars explicityly
+PORT=4000 SECRET_KEY_BASE=secret
+
+# Run the release interactively
+PORT=4000 ./bin/myapp console
+
+# Run the release in foreground (Ctrl-C kills it)
+PORT=4000 ./bin/myapp foreground
+
+# Run the release as a daemon (keeps running after remote shell exits)
+PORT=4000 ./bin/myapp start

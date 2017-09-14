@@ -1,12 +1,57 @@
-# Elixir 1.5.1.: https://hub.docker.com/_/elixir/
-FROM elixir:1.5.1
+FROM ubuntu:16.04
 MAINTAINER Kyle Oba <koba@pasdechocolat.com>
-ENV DEBIAN_FRONTEND=noninteractive
+
+
+### ERLANG REQUIRES CURL
+#
+
+RUN set -ex; \
+	apt-get update; \
+	apt-get install -y --no-install-recommends \
+                curl \
+                ca-certificates\
+                \
+	;
+
+RUN echo "deb http://packages.erlang-solutions.com/ubuntu xenial contrib" >> /etc/apt/sources.list && \
+    apt-key adv --fetch-keys http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc && \
+    apt-get -qq update && apt-get install -y \
+    esl-erlang=1:20.0 \
+    git \
+    unzip \
+    build-essential \
+    wget \
+    locales && \
+apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+
+### FROM ELIXIR
+# https://github.com/c0b/docker-elixir/blob/162a4ccf85fa7ebcefdbf43903099b0907f6babd/1.5/Dockerfile
+# elixir expects utf8.
+ENV ELIXIR_VERSION="v1.5.1" \
+	LANG=C.UTF-8
+
+RUN set -xe \
+	&& ELIXIR_DOWNLOAD_URL="https://github.com/elixir-lang/elixir/archive/${ELIXIR_VERSION}.tar.gz" \
+	&& ELIXIR_DOWNLOAD_SHA256="9a903dc71800c6ce8f4f4b84a1e4849e3433e68243958fd6413a144857b61f6a" \
+	&& curl -fSL -o elixir-src.tar.gz $ELIXIR_DOWNLOAD_URL \
+	&& echo "$ELIXIR_DOWNLOAD_SHA256  elixir-src.tar.gz" | sha256sum -c - \
+	&& mkdir -p /usr/local/src/elixir \
+	&& tar -xzC /usr/local/src/elixir --strip-components=1 -f elixir-src.tar.gz \
+	&& rm elixir-src.tar.gz \
+	&& cd /usr/local/src/elixir \
+&& make install clean
+
+# Set the locale, otherwise elixir will complain later on
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
 
 ######
 # Install the Phoenix framework itself
 ######
-ENV ELIXIR_VERSION=1.5.1
+#ENV ELIXIR_VERSION=1.5.1
 ENV PHOENIX_VERSION=1.3.0
 
 # install Phoenix from source with some previous requirements
@@ -20,6 +65,9 @@ RUN apt-get update && apt-get upgrade -y && apt-get install -y inotify-tools \
 # the snippet below is borrowed from the official nodejs Dockerfile
 # https://github.com/nodejs/docker-node/blob/2924f142789842282890f7b1736578b49b3be78f/8.5/Dockerfile
 #####
+
+RUN groupadd --gid 1000 node \
+  && useradd --uid 1000 --gid node --shell /bin/bash --create-home node
 
 # gpg keys listed at https://github.com/nodejs/node#release-team
 RUN set -ex \
@@ -82,4 +130,5 @@ RUN set -ex \
 #RUN  chmod +x /usr/local/bin/*.sh
 
 WORKDIR /app
+EXPOSE 4000 80
 ENTRYPOINT [ "/bin/bash" ]
