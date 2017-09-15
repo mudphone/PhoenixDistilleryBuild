@@ -2,25 +2,16 @@ FROM ubuntu:16.04
 MAINTAINER Kyle Oba <koba@pasdechocolat.com>
 
 
-### ERLANG REQUIRES CURL
+### ERLANG
 #
-
-RUN set -ex; \
-	apt-get update; \
-	apt-get install -y --no-install-recommends \
-                curl \
-                ca-certificates\
-                \
-	;
-
-RUN echo "deb http://packages.erlang-solutions.com/ubuntu xenial contrib" >> /etc/apt/sources.list && \
+RUN set -ex && \
+    echo "deb http://packages.erlang-solutions.com/ubuntu xenial contrib" >> /etc/apt/sources.list && \
     apt-key adv --fetch-keys http://packages.erlang-solutions.com/ubuntu/erlang_solutions.asc && \
-    apt-get -qq update && apt-get install -y \
+    apt-get -qq update && apt-get install -y --no-install-recommends \
+    curl \
+    ca-certificates \
     esl-erlang=1:20.0 \
-    git \
-    unzip \
     build-essential \
-    wget \
     locales && \
 apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
