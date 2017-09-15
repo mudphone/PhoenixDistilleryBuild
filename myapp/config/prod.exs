@@ -24,6 +24,15 @@ config :myapp, MyappWeb.Endpoint,
 # Do not print debug messages in production
 config :logger, level: :info
 
+# Configure your database
+config :myapp, Myapp.Repo,
+  adapter: Ecto.Adapters.Postgres,
+  username: {:system, "DB_USERNAME_PROD"},
+  password: {:system, "DB_PASSWORD_PROD"},
+  database: {:system, "DB_NAME_PROD"},
+  url: {:system, "DB_URL_PROD"},
+  pool_size: 15
+
 # ## SSL Support
 #
 # To get SSL working, you will need to add the `https` key
