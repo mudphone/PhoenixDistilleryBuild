@@ -13,13 +13,16 @@ docker run -it --rm -v /path/to/myapp:/app -p 4000:4000 -e MIX_ENV=prod -e PORT=
 # Only if you're not going to use the SECRET_KEY_BASE env var,
 # copy prod.secret.exs to /root or wherever specified in prod.exs
 
+# If using `${VAR}` syntax, include `-e REPLACE_OS_VARS=true` (in Docker `run`)
+# Currently using `{:system, "VAR"}` syntax in prod.exs to replace at runtime
+
 # To build the release from the container:
 cd myapp
 boot build
 MIX_ENV=prod mix do phx.digest, release --env=prod
 
 # To build the release from command line (using container):
-docker run -it --rm -v /path/to/myapp:/app -p 4000:4000 -e MIX_ENV=prod -e PORT=4000 -e REPLACE_OS_VARS=true test/myapp ./distillery_build.sh
+docker run -it --rm -v /path/to/myapp:/app -p 4000:4000 -e MIX_ENV=prod -e PORT=4000 test/myapp ./distillery_build.sh
 
 # Create local_deploy dir, expand files
 # To be done on AWS EC2 instance, running same OS (ubuntu 16.04 currently):
