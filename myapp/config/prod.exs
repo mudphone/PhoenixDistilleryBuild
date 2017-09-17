@@ -27,10 +27,6 @@ config :logger, level: :info
 # Configure your database
 config :myapp, Myapp.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: {:system, "DB_USERNAME_PROD"},
-  password: {:system, "DB_PASSWORD_PROD"},
-  database: {:system, "DB_NAME_PROD"},
-  url: {:system, "DB_URL_PROD"},
   pool_size: 15
 
 # ## SSL Support
@@ -74,7 +70,7 @@ config :myapp, Myapp.Repo,
 # Use system tuple for releases
 # Use System.gen_env for Heroku
 config :myapp, MyappWeb.Endpoint,
-  secret_key_base: {:system, "SECRET_KEY_BASE"}
+  secret_key_base: "${SECRET_KEY_BASE}"
 
 
 # Finally import the config/prod.secret.exs

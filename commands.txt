@@ -36,9 +36,13 @@ tar xvfz myapp.tar.gz
 # DB_USERNAME_PROD
 # DB_PASSWORD_PROD
 # DB_NAME_PROD
-# DB_URL_PROD
+# DB_URL_PROD=postgres://username:password@host/database
 # PORT
 # SECRECT_KEY_BASE
+
+PORT=4000 DB_USERNAME_PROD="postgres" DB_PASSWORD="postgres" DB_NAME_PROD="myapp_prod" DB_URL_PROD="postgres://postgres:postgres@localhost/myapp_pro" SECRET_KEY_BASE="secret" ./bin/myapp foreground
+
+PORT=4000 DB_URL_PROD="postgres://postgres:postgres@192.168.200.76/myapp_prod" SECRET_KEY_BASE="secret" REPLACE_OS_VARS=true ./bin/myapp foreground
 
 # Run the release interactively
 PORT=4000 SECRET_KEY_BASE=secret ./bin/myapp console

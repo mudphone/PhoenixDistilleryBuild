@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+echo "Running Distillery pre_start hook..."
+#${SCRIPT} create
+${SCRIPT} migrate

@@ -1,0 +1,13 @@
+<h2>Show Note</h2>
+
+<ul>
+
+  <li>
+    <strong>Word:</strong>
+    <%= @note.word %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: note_path(@conn, :edit, @note) %></span>
+<span><%= link "Back", to: note_path(@conn, :index) %></span>

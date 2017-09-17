@@ -34,6 +34,8 @@ environment :dev do
 end
 
 environment :prod do
+  set plugins: [Myapp.DistilleryPlugins]
+  set pre_start_hook: "rel/hooks/pre_start"
   set include_erts: true
   set include_src: false
   set cookie: :"!yXq4uhap3A]{,5MrE?!pBqJpE@Kl^@N<>6n5%L?%v|frL@4rUUS*ywwEN9~D1mB"
@@ -45,6 +47,10 @@ end
 # will be used by default
 
 release :myapp do
+  set commands: [
+    "create": "rel/commands/create.sh",
+    "migrate": "rel/commands/migrate.sh"
+  ]
   set version: current_version(:myapp)
   set applications: [
     :runtime_tools
